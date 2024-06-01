@@ -1,14 +1,15 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 
 class Downloader {
   static void downloadFile({
-    String url =
-        'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+    required String url,
     String filename = 'TestFile',
   }) async {
     var httpClient = http.Client();
@@ -60,7 +61,13 @@ class Downloader {
 
   static Future<void> saveDownloadedVideoToGallery(
       {required String videoPath}) async {
-    await ImageGallerySaver.saveFile(videoPath);
+    var res = await ImageGallerySaver.saveFile(videoPath, name: "test");
+    log(res.toString());
+    final box = GetStorage();
+
+    String path =
+        res['filePath'].toString().replaceAll(RegExp('content://'), '');
+    box.write('testvideo', path);
   }
 
   static Future<void> removeDownloadedVideo({required String videoPath}) async {

@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flick_video_player/flick_video_player.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
 import 'package:videoplayer/download_file/download_file.dart';
@@ -16,6 +18,9 @@ class FlickVideo extends StatefulWidget {
 class _FlickVideoState extends State<FlickVideo> {
   late FlickManager flickManager;
   late VideoPlayerController videoPlayerController;
+  String video_url =
+      'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4';
+  //String video_url = "https://www.googleapis.com/drive/v3/files/12QWT-RUDW-m-hYb0wuzdXOtqBmssTqzE?alt=media&key=AIzaSyB_cNFR2Km1RdWkwkeyNo4HgINPguS0_LI",
 
   double? aspectRatio;
   @override
@@ -25,9 +30,13 @@ class _FlickVideoState extends State<FlickVideo> {
   }
 
   videoController() async {
+    final box = GetStorage();
+    log(box.read('testvideo'));
+
     videoPlayerController = VideoPlayerController.networkUrl(
       Uri.parse(
-          "https://www.googleapis.com/drive/v3/files/12QWT-RUDW-m-hYb0wuzdXOtqBmssTqzE?alt=media&key=AIzaSyB_cNFR2Km1RdWkwkeyNo4HgINPguS0_LI"),
+        video_url,
+      ),
     )..addListener(() {
         log(videoPlayerController.value.duration.toString());
         setState(() {
@@ -72,13 +81,15 @@ class _FlickVideoState extends State<FlickVideo> {
                 PermissionStatus status = await Permission.storage.request();
                 if (status.isGranted) {
                   log('Downloading');
-                  Downloader.downloadFile();
+                  Downloader.downloadFile(
+                    url: video_url,
+                  );
                 } else {
                   log("Denied");
                 }
               },
               child: const Text('Download'),
-            )
+            ),
           ],
         ),
       ),

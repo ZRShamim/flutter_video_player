@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:videoplayer/flick/flick_video.dart';
 
-void main() {
+void main() async {
+  await GetStorage.init();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.black54, // navigation bar color
